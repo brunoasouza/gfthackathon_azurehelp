@@ -1,0 +1,9 @@
+
+.amlignore
+.amlignore.amltmp
+
+# ignore all configs files
+baseproject/common/__pycache__
+baseproject/common/__pycache__/*.*
+baseproject/common/config.json
+baseproject/.config
