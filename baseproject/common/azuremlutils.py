@@ -8,6 +8,8 @@ import pandas as pd
 import json
 import os
 import pathlib
+import mlflow
+from azureml.core.model import Model
 
 
 class AzureMlUtils:
@@ -15,6 +17,7 @@ class AzureMlUtils:
     """ Init constuctor to read the config file with the credentials"""
     def __init__(self):
         self.ws = Workspace.from_config()
+        mlflow.set_tracking_uri(self.ws.get_mlflow_tracking_uri())
 
         directory = pathlib.Path(__file__).parent.resolve()
         with open(str(directory) + '/config.json') as f:
@@ -30,6 +33,32 @@ class AzureMlUtils:
         try:
             experiment = Experiment(self.ws, experiment_name)
             return experiment
+        except Exception as e:
+            logging.exception(e)
+    
+    """ Create experiment on azure machine learning with Mlflow
+
+        :param str  experiment_name: experiment name
+
+        :return Experiment: experiment object with all information
+    """
+    def create_experiment_with_mlflow(self, experiment_name: str):
+        try:
+            return mlflow.set_experiment(experiment_name)
+        except Exception as e:
+            logging.exception(e)
+
+    """ Register a model on azure machine learning with Mlflow
+
+        :param str  run_id: Execution id
+        :param str  folder_path: Folder where the files in the experiment
+        :param str  model_name: Folder where the files in the experiment
+
+        :return register_model: MLflow Object
+    """
+    def register_model_with_mlflow(self, run_id: str, folder_path: str, model_name:str):
+        try:  
+            return mlflow.register_model("runs:/{run_id}/{folder_path}","{model_name}")
         except Exception as e:
             logging.exception(e)
 
