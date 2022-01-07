@@ -44,7 +44,8 @@ class AzureMlUtils:
     """
     def create_experiment_with_mlflow(self, experiment_name: str):
         try:
-            return mlflow.set_experiment(experiment_name)
+            mlflow.set_experiment(experiment_name)
+            return mlflow
         except Exception as e:
             logging.exception(e)
 
